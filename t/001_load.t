@@ -4,6 +4,6 @@
 
 use Test::More tests => 1;
 
-BEGIN { use_ok( 'Mojolicious::Plugin::RoutesConfig' ); }
+BEGIN { use_ok('Mojolicious::Plugin::RoutesConfig'); }
 
 

@@ -2,19 +2,20 @@ package Mojolicious::Plugin::RoutesConfig;
 use strict;
 
 BEGIN {
-    use Exporter ();
-    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-    $VERSION     = '0.01';
-    @ISA         = qw(Exporter);
-    #Give a hoot don't pollute, do not export more than needed by default
-    @EXPORT      = qw();
-    @EXPORT_OK   = qw();
-    %EXPORT_TAGS = ();
+  use Exporter ();
+  use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
+  $VERSION = '0.01';
+  @ISA     = qw(Exporter);
+
+  #Give a hoot don't pollute, do not export more than needed by default
+  @EXPORT      = qw();
+  @EXPORT_OK   = qw();
+  %EXPORT_TAGS = ();
 }
 
 
 #################### main pod documentation begin ###################
-## Below is the stub of documentation for your module. 
+## Below is the stub of documentation for your module.
 ## You better edit it!
 
 
@@ -76,5 +77,6 @@ perl(1).
 
 
 1;
+
 # The preceding line will help the module return a true value
 
