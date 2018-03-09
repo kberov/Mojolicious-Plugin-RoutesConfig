@@ -1,4 +1,3 @@
-.gitattributes
 .perltidyrc
 Changes
 lib/Mojolicious/Plugin/RoutesConfig.pm
@@ -8,6 +7,16 @@ MANIFEST
 README
 t/.perlcriticrc
 t/001_load.t
+t/basic.t
+t/blog/blog.conf
+t/blog/etc/complex_routes.conf
+t/blog/etc/routes_missing.conf
+t/blog/lib/Blog.pm
+t/blog/lib/Blog/Controller/Example.pm
+t/blog/public/index.html
+t/blog/script/blog
+t/blog/templates/example/welcome.html.ep
+t/blog/templates/layouts/default.html.ep
 t/manifest.t
 t/perl-critic.t
 t/pod.t
