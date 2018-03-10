@@ -8,6 +8,12 @@ sub startup {
   # Load configuration from hash returned by "my_app.conf"
   my $config = $self->plugin('Config');
 
+  $self->plugin('RoutesConfig', $config);
+  $self->plugin('RoutesConfig',
+                {file => $self->home->child('etc/routes_not_ARRAY.conf')});
+  $self->plugin('RoutesConfig',
+                {file => $self->home->child('etc/routes_missing.conf')});
+
   # Documentation browser under "/perldoc"
   $self->plugin('PODRenderer') if $config->{perldoc};
 
