@@ -5,23 +5,25 @@ use Mojo::Base 'Mojolicious';
 sub startup {
   my $self = shift;
 
-  # Load configuration from hash returned by "my_app.conf"
-  my $config = $self->plugin('Config');
-
-  $self->plugin('RoutesConfig', $config);
-  $self->plugin('RoutesConfig',
-                {file => $self->home->child('etc/routes_not_ARRAY.conf')});
   $self->plugin('RoutesConfig',
                 {file => $self->home->child('etc/routes_missing.conf')});
 
-  # Documentation browser under "/perldoc"
-  $self->plugin('PODRenderer') if $config->{perldoc};
+  # Load configuration from hash returned by "my_app.conf"
+  my $config = $self->plugin('Config');
 
   # Router
   my $r = $self->routes;
 
   # Normal route to controller
   $r->get('/')->to('example#welcome');
+
+  # Documentation browser under "/perldoc"
+  $self->plugin('RoutesConfig', $config);
+  $self->plugin('PODRenderer') if $config->{perldoc};
+  $self->plugin('RoutesConfig',
+                {file => $self->home->child('etc/routes_not_ARRAY.conf')});
+  $self->plugin('RoutesConfig',
+                {file => $self->home->child('etc/complex_routes.conf')});
 }
 
 1;

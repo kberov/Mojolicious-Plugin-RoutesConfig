@@ -20,10 +20,14 @@ like $buffer, qr/"routes" key must point to an ARRAY/,
 like $buffer, qr/No routes de.+missing.conf/,
   'right warning about missing definitions';
 
-like $buffer, qr/"routes" key must point to an ARRAY.+AY.conf/,
+like $buffer, qr/"routes" key must point to an ARRAY.+AY\.conf/,
   'right warning about ARRAY reference in file';
-say $buffer;
 
+like $buffer, qr/.+complex.+\.conf.+route initialisation method/ms,
+  'right warning about missing route initialisation method';
+
+like $buffer, qr/.+complex.+\.conf.+method "blah" via package/ms,
+  'right warning about unknown method';
 $t->get_ok('/')->status_is(200)->content_like(qr/Mojolicious/i);
 
 

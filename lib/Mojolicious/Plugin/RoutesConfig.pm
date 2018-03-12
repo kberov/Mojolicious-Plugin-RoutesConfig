@@ -6,46 +6,62 @@ sub register {
   my ($self, $app, $conf) = @_;
   my $file = $conf->{file};
   my $file_msg = ($file ? ' in file ' . $file : '');
-  $conf = $self->load($file, {}, $app) if $file;
-  $app->log->warn('No routes definitions found' . $file_msg . '...') && return
+  $conf = $self->SUPER::register($app, $conf);
+  $app->log->warn('No routes definitions found' . $file_msg . '...')
+    && return $conf
     unless exists $conf->{routes};
-
   $app->log->warn(  '"routes" key must point to an ARRAY reference '
                   . 'of routes descriptions'
                   . $file_msg . '...')
-    && return
+    && return $conf
     unless ref $conf->{routes} eq 'ARRAY';
 
-  $self->_generate_routes($app, $conf->{routes});
-  return $self;
+  $self->_generate_routes($app, $conf->{routes}, $file_msg);
+  return $conf;
 }
 
-#generates routes recursively
+#generates routes (TODO:recursively?)
 sub _generate_routes {
-  my ($self, $app, $routes_conf, $current) = @_;
-  my $routes = $app->routes;
+  my ($self, $app, $routes_conf, $file_msg) = @_;
+  my $routes  = $app->routes;
+  my $init_rx = '^any|route|get|post|patch|put|delete|options$';
   for my $rconf (@$routes_conf) {
-    my $init_method = first(
-      sub {
-        $_ =~ /^any|route|get|post|patch|put|delete|options$/;
-      },
-      keys %$rconf
-                           );
-    my $params = delete $rconf->{$init_method};
+    my $init_method = first(sub { $_ =~ /$init_rx/; }, keys %$rconf);
+    unless ($init_method) {
+      $app->log->warn( "Malformed route description$file_msg!!!$/"
+                     . " Could not find route initialisation method, matching$/"
+                     . " /$init_rx/$/"
+                     . " in definition$/"
+                     . $app->dumper($rconf)
+                     . ". Skipping...");
+      next;
+    }
+    my $init_params = $rconf->{$init_method};
     my $route
       = $routes->$init_method(
-                              ref $params eq 'ARRAY'
-                              ? @$params
-                              : (ref $params eq 'HASH' ? %$params : $params));
-    for my $method (keys %$rconf) {
-      while (my $params = delete $rconf->{$method}) {
-        $route->method(
-                       ref $params eq 'ARRAY'
-                       ? @$params
-                       : (ref $params eq 'HASH' ? %$params : $params));
-      }
-    }
+                 ref $init_params eq 'ARRAY'
+                 ? @$init_params
+                 : (ref $init_params eq 'HASH' ? %$init_params : $init_params));
 
+    for my $method (keys %$rconf) {
+      next if $method eq $init_method;
+      my $params = $rconf->{$method};
+      $route->can($method) || do {
+        $app->log->warn("Malformed route description$file_msg!!!$/"
+          . " for route definition$/"
+          . $app->dumper($rconf)
+          . qq|Can't locate object method "$method" via package "${\ ref $route}"!$/|
+          . ' Removing route '
+          . (ref $init_params eq 'ARRAY' ? $init_params->[0] : $init_params));
+        $route->remove();
+        last;
+      };
+
+      $route->$method(
+                      ref $params eq 'ARRAY'
+                      ? @$params
+                      : (ref $params eq 'HASH' ? %$params : $params));
+    }
   }
   return;
 }
