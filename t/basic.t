@@ -2,13 +2,12 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
-use Mojo::Util 'decode';
 use FindBin;
 use lib "$FindBin::Bin/blog/lib";
 
 my $buffer = '';
 {
-$ENV{MOJO_HOME} = "$FindBin::Bin/blog";
+  local $ENV{MOJO_LOG_LEVEL} = 'warn';
   open my $handle, '>', \$buffer;
   local *STDERR = $handle;
   require Blog;
