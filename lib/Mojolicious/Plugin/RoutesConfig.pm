@@ -2,6 +2,9 @@ package Mojolicious::Plugin::RoutesConfig;
 use Mojo::Base 'Mojolicious::Plugin::Config';
 use List::Util qw(first);
 
+our $VERSION   = 0.03;
+our $AUTHORITY = 'cpan:BEROV';
+
 sub register {
   my ($self, $app, $conf) = @_;
   my $file = $conf->{file};

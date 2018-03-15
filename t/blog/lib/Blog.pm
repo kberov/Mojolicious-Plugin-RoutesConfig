@@ -4,7 +4,6 @@ use Mojo::Base 'Mojolicious';
 # This method will run once at server start
 sub startup {
   my $self = shift;
-
   $self->plugin('RoutesConfig',
                 {file => $self->home->child('etc/routes_missing.conf')});
 
@@ -17,8 +16,9 @@ sub startup {
   # Normal route to controller
   $r->get('/')->to('example#welcome');
 
-  # Documentation browser under "/perldoc"
   $self->plugin('RoutesConfig', $config);
+
+  # Documentation browser under "/perldoc"
   $self->plugin('PODRenderer') if $config->{perldoc};
   $self->plugin('RoutesConfig',
                 {file => $self->home->child('etc/routes_not_ARRAY.conf')});
