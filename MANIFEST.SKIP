@@ -77,8 +77,8 @@ tags$
 \.tags
 .idea
 .iml
+_Deparsed_XSubs.pm$
 # Avoid CI tools files
 \.travis.yml
-_Deparsed_XSubs.pm$
 .+\.tdy
 

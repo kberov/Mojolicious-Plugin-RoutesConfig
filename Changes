@@ -1,7 +1,9 @@
 Revision history for Perl module Mojolicious::Plugin::RoutesConfig
 
-0.03 вт мар 13 20:58:36 CET 2018
-    - Added tests for parsing routes.config files and generating routes.
+0.03 пт мар 16 23:45:07 CET 2018
+    - Improved documentation.
+    - Added tests for parsing routes.config files, generating routes and making
+      requests to those routes.
     - Improved Makefile.PL.
 
 0.02 пт мар  9 18:07:26 CET 2018

@@ -28,9 +28,12 @@ like $buffer, qr/.+complex.+\.conf.+route initialisation method/ms,
 
 like $buffer, qr/.+complex.+\.conf.+method "blah" via package/ms,
   'right warning about unknown method';
+
 my $t;
 $t = Test::Mojo->new('Blog');
 $t->get_ok('/')->status_is(200)->content_like(qr/Mojolicious/i);
-
+$t->get_ok('/posts')->status_is(200)->content_like(qr/post5/);
+$t->get_ok('/posts/index')->status_is(200)->content_like(qr/post5/);
+$t->post_ok('/posts')->status_is(201)->content_is('');
 
 done_testing();

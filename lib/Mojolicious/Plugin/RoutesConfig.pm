@@ -89,7 +89,9 @@ Mojolicious::Plugin::RoutesConfig - Describe routes in configuration
 
   # Mojolicious
   my $config = $app->plugin('Config');
-
+  # or even
+  my $config = $app->plugin('RoutesConfig');
+  # or
   $app->plugin('RoutesConfig', $config);
   $app->plugin('RoutesConfig', {file => $app->home->child('etc/routes_admin.conf')});
   $app->plugin('RoutesConfig', {file => $app->home->child('etc/routes_site.conf')});
@@ -99,6 +101,7 @@ Mojolicious::Plugin::RoutesConfig - Describe routes in configuration
   plugin 'RoutesConfig', $config;
   plugin 'RoutesConfig', {file => app->home->child('etc/routes_admin.conf')};
   plugin 'RoutesConfig', {file => app->home->child('etc/routes_site.conf')};
+
 =head1 DESCRIPTION
 
 L<Mojolicious::Plugin::RoutesConfig> allows you to define your routes in
@@ -106,10 +109,13 @@ configuration file or in a separate file, for example
 C<$MOJO_HOME/etc/plugins/routes.conf>. This way you can quickly enable and
 disable parts of your application without editing its source code.
 
-The routes are described the same way as you would generate them
-imperatively, just instead of methods you use method names as keys and
-suitable references as values which will be dereferenced and passed as arguments to
-the respective method. For allowed keys look at L<Mojolicious::Routes::Route>. 
+The routes are described the same way as you would generate them imperatively,
+just instead of methods you use method names as keys and suitable references as
+values which will be dereferenced and passed as arguments to the respective
+method. For allowed keys look at L<Mojolicious::Routes::Route/METHODS>. Of
+course only relatively simple cases are handled. Complex logic is left to the
+programmer. Still you can have all your routes defined in the configuration
+file as it is Perl and you have the C<app> object available.
 
 =head1 METHODS
 
@@ -139,7 +145,7 @@ LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-L<Mojolicious>
+L<Mojolicious::Routes>, L<Mojolicious::Routes::Route>, L<Mojolicious::Plugin::Config>
 
 =cut
 
