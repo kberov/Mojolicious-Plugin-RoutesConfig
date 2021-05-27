@@ -2,12 +2,12 @@ package Mojolicious::Plugin::RoutesConfig;
 use Mojo::Base 'Mojolicious::Plugin::Config', -signatures;
 use List::Util qw(first);
 
-our $VERSION   = 0.05;
+our $VERSION   = 0.07;
 our $AUTHORITY = 'cpan:BEROV';
 
 sub register {
   my ($self, $app, $conf) = @_;
-  my $file = $conf->{file};
+  my $file     = $conf->{file};
   my $file_msg = ($file ? ' in file ' . $file : '');
   $conf = $self->SUPER::register($app, $conf);
   $app->log->warn('No routes definitions found' . $file_msg . '...')
@@ -26,7 +26,7 @@ sub register {
 # generates routes (recursively for under)
 sub _generate_routes {
   my ($self, $app, $routes, $routes_conf, $file_msg) = @_;
-  my $init_rx = '^(?:any|route|get|post|patch|put|delete|options|under)$';
+  my $init_rx = '^(?:any|get|post|patch|put|delete|options|under)$';
   for my $rconf (@$routes_conf) {
     my $init_method = first(sub { $_ =~ /$init_rx/; }, keys %$rconf);
     unless ($init_method) {
@@ -39,7 +39,7 @@ sub _generate_routes {
       next;
     }
     my $init_params = $rconf->{$init_method};
-    my $route = _call_method($routes, $init_method, $init_params);
+    my $route       = _call_method($routes, $init_method, $init_params);
     if ($init_method eq 'under') {    # recourse
       $self->_generate_routes($app, $route, $rconf->{routes}, $file_msg);
     }
@@ -77,7 +77,10 @@ sub _call_method ($caller, $method, $params) {
     return $caller->$method($params);
   }
 
-  Carp::croak('This should never happen');
+  Carp::confess("Paramether to $method "
+    . "must be one of ARRAY, HASH, CODE reference or scalar in the form controller#action. "
+    . "Now it is "
+    . Mojo::Util::dumper($params));
 }
 
 =encoding utf8
@@ -106,7 +109,7 @@ Mojolicious::Plugin::RoutesConfig - Describe routes in configuration
     ],
   }
 
-  # Mojolicious
+  # in YourApp::startup()
   my $config = $app->plugin('Config');
   # or even
   my $config = $app->plugin('RoutesConfig');
@@ -115,7 +118,7 @@ Mojolicious::Plugin::RoutesConfig - Describe routes in configuration
   $app->plugin('RoutesConfig', {file => $app->home->child('etc/routes_admin.conf')});
   $app->plugin('RoutesConfig', {file => $app->home->child('etc/routes_site.conf')});
 
-  # Mojolicious::Lite
+  # in  YourLiteApp
   my $config = plugin 'Config';
   plugin 'RoutesConfig', $config;
   plugin 'RoutesConfig', {file => app->home->child('etc/routes_admin.conf')};
@@ -169,9 +172,6 @@ LICENSE file included with this module.
 L<Mojolicious::Routes>, L<Mojolicious::Routes::Route>, L<Mojolicious::Plugin::Config>
 
 =cut
-
-#################### main pod documentation end ###################
-
 
 1;
 

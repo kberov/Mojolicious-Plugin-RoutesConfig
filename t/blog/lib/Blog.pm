@@ -18,8 +18,6 @@ sub startup {
 
   $self->plugin('RoutesConfig', $config);
 
-  # Documentation browser under "/perldoc"
-  $self->plugin('PODRenderer') if $config->{perldoc};
   $self->plugin('RoutesConfig',
                 {file => $self->home->child('etc/routes_not_ARRAY.conf')});
   $self->plugin('RoutesConfig',
